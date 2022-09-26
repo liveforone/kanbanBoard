@@ -2,7 +2,6 @@ package kanbanBoard.kanbanBoard.doing.controller;
 
 import kanbanBoard.kanbanBoard.backlog.service.BackLogService;
 import kanbanBoard.kanbanBoard.doing.domain.Doing;
-import kanbanBoard.kanbanBoard.doing.dto.DoingDto;
 import kanbanBoard.kanbanBoard.doing.service.DoingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,10 +64,22 @@ public class DoingController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.MOVED_PERMANENTLY);
     }
 
+    /*
+    현재 user 뷰로 보내줌.
+    뷰에서 worker와 동일한 유저인지 판별
+     */
     @GetMapping("/doing/{id}")
-    public ResponseEntity<Doing> doingDetail(@PathVariable("id") Long id) {
+    public ResponseEntity<Map<String, Object>> doingDetail(
+            @PathVariable("id") Long id,
+            Principal principal
+    ) {
+        String user = principal.getName();
+        Map<String, Object> map = new HashMap<>();
         Doing doing = doingService.getDoingOne(id);
 
-        return new ResponseEntity<>(doing, HttpStatus.OK);
+        map.put("user", user);
+        map.put("doing", doing);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

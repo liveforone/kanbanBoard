@@ -23,7 +23,7 @@
 * done 게시판은 id순으로 정렬하여서 가장 최신으로 완료된 일 순으로 정렬하여 보여준다.
 * 기존의 게시판들은 emergency순으로 정렬하고 그 다음 정렬 기준이 id값이었다.
 * 게시판을 버튼 클릭으로 넘어갈때마다(doing 게시판부터) princiapl로 현재 유저와 저장되어있는 worker를 판별하여 둘이 맞을 경우 다음 게시판으로 넘겨준다.
-* worker 판별은 서버에서 진행한다.
+* worker 판별은 뷰에서 진행한다. 잘못됬을 경우 api도 뷰에서 리턴 시킨다.
 * 한 게시판에서 다음 게시판으로 넘어갈때 마다 원래 게시판에서는 동시에 삭제 처리해버린다.
 
 ## 엔티티 설계
@@ -42,6 +42,12 @@
 * 둘째로 내용만 업데이트 하는 경우
 * 셋째로 둘다 업데이트 하는 경우
 * 세 경우에 따라 if문으로 분류하고 서비스 로직에서 알맞은 방법에 맞게 업데이트 해준다.
+
+## done post시 제약
+* done 을 save하는 경우 두가지 조건이 생긴다.
+* 첫째 doing에서 save 하는 경우
+* 둘째 testing에서 save 하는 경우
+* 이에 맞추어서 api를 수정하여 save 처리한다.
 
 ## json body - user는 생략
 #### backlog
@@ -84,3 +90,15 @@
 #### doing
 * /doing - get
 * /doing/post/{id} - post, id값은 backlog id
+* /doing/{id} - get
+
+#### testing
+* /testing - get
+* /testing/post/{id} - post, id값은 doing id
+* /testing/{id} - get
+
+#### done
+* /done - get
+* /done/doing-post/{id} - post, id값은 doing id, doing에서 바로 done 하는 경우
+* /done/testing-post/{id} - post, id값은 testing id, testing에서 done 하는 경우
+* /done/{id} - get

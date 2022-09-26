@@ -43,4 +43,9 @@ public class DoingService {
     public Doing getDoingOne(Long id) {
         return doingRepository.findOneById(id);
     }
+
+    @Transactional
+    public void deleteDoing(Long id) {
+        doingRepository.deleteById(id);
+    }
 }

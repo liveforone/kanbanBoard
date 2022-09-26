@@ -58,4 +58,9 @@ public class BackLogService {
 
         backLogRepository.save(backLogDto.toEntity());
     }
+
+    @Transactional
+    public void deleteBackLog(Long id) {
+        backLogRepository.deleteById(id);
+    }
 }
